@@ -1,0 +1,49 @@
+import random #модуль для генерации случайных чисел
+
+def partition_hoare(arr, low, high):
+    
+    pivot = arr[low]
+    
+    #i движется слева направо
+    i = low - 1
+    
+    #j движется справа налево
+    j = high + 1
+    
+    while True:
+        
+        #двигаем i вправо, пока элемент меньше pivot
+        i += 1
+        while arr[i] < pivot:
+            i += 1
+        
+        #двигаем j влево, пока элемент больше pivot
+        j -= 1
+        while arr[j] > pivot:
+            j -= 1
+        
+        #если указатели пересеклись, то возвращаем границу
+        if i >= j:
+            return j
+        
+        #иначе меняем элементы местами
+        arr[i], arr[j] = arr[j], arr[i]
+
+def quick_sort(arr, low, high):
+    
+    if low < high:
+        
+        #выбираем случайный индекс в диапазоне [low, high]
+        random_index = random.randint(low, high)
+        
+        #меняем его местами с первым элементом
+        arr[random_index], arr[low] = arr[low], arr[random_index]
+        
+        #разбиение
+        p = partition_hoare(arr, low, high)
+        
+        #рекурсивно сортируем левую часть
+        quick_sort(arr, low, p)
+        
+        #рекурсивно сортируем правую часть
+        quick_sort(arr, p + 1, high)
