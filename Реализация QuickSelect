@@ -1,0 +1,28 @@
+def quick_select(arr, k):
+   
+    def select(low, high):
+        
+        #если остался один элемент, это и есть ответ
+        if low == high:
+            return arr[low]
+        
+        #рандомизация pivot
+        random_index = random.randint(low, high)
+        arr[random_index], arr[high] = arr[high], arr[random_index]
+        
+        #разбиение
+        pi = partition(arr, low, high)
+        
+        #если pivot оказался на позиции k - ответ найден
+        if pi == k:
+            return arr[pi]
+        
+        #если k меньше, то рекурсируем только в левую часть
+        elif k < pi:
+            return select(low, pi - 1)
+        
+        #иначе в правую часть
+        else:
+            return select(pi + 1, high)
+    
+    return select(0, len(arr) - 1)
