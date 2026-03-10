@@ -1,0 +1,68 @@
+import time
+import random
+import matplotlib.pyplot as plt
+
+#алгоритм 1 - Bubble Sort (пример O(n²))
+def bubble_sort(n):
+    arr = [random.randint(0, 100000) for _ in range(n)]
+
+    for i in range(n):
+        for j in range(0, n - i - 1):
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+
+    return arr
+
+
+#алгоритм 2 - QuickSort (пример O(n log n))
+def quick_sort(n):
+    arr = [random.randint(0, 100000) for _ in range(n)]
+
+    def qs(a):
+        if len(a) <= 1:
+            return a
+
+        pivot = a[len(a) // 2]
+
+        left = [x for x in a if x < pivot]
+        middle = [x for x in a if x == pivot]
+        right = [x for x in a if x > pivot]
+
+        return qs(left) + middle + qs(right)
+
+    return qs(arr)
+
+
+sizes = [1000, 5000, 10000, 50000]
+
+times_bubble = []
+times_quick = []
+
+
+for n in sizes:
+
+    #измерение для Bubble Sort
+    start = time.time()
+    bubble_sort(n)
+    end = time.time()
+    times_bubble.append(end - start)
+
+    #измерение для QuickSort
+    start = time.time()
+    quick_sort(n)
+    end = time.time()
+    times_quick.append(end - start)
+
+
+#построение графика
+plt.plot(sizes, times_bubble, marker='o', label='Bubble Sort O(n²)')
+plt.plot(sizes, times_quick, marker='o', label='QuickSort O(n log n)')
+
+plt.xlabel("Размер входных данных (n)")
+plt.ylabel("Время выполнения (секунды)")
+plt.title("Сравнение времени выполнения алгоритмов сортировки")
+
+plt.legend()
+plt.grid(True)
+
+plt.show()
