@@ -1,0 +1,77 @@
+import heapq
+from collections import Counter
+
+#класс узла дерева Хаффмана
+class Node:
+    def __init__(self, char=None, freq=0):
+        self.char = char      # символ
+        self.freq = freq      # частота символа
+        self.left = None      # левый потомок (0)
+        self.right = None     # правый потомок (1)
+
+    def __lt__(self, other):
+        return self.freq < other.freq
+
+
+#построение дерева Хаффмана
+def build_tree(text):
+    #считаем частоту каждого символа
+    freq = Counter(text)
+    
+    heap = []
+
+    #создаем узел для каждого символа и кладем в кучу
+    for ch in freq:
+        heapq.heappush(heap, Node(ch, freq[ch]))
+
+    #объединяем два наименее частых узла
+    while len(heap) > 1:
+        left = heapq.heappop(heap)   # самый маленький
+        right = heapq.heappop(heap)  # второй по величине
+
+        #создаем новый объединённый узел
+        merged = Node(freq=left.freq + right.freq)
+        merged.left = left
+        merged.right = right
+
+        heapq.heappush(heap, merged)
+
+    #корень дерева
+    return heap[0]
+
+
+#рекурсивно строим коды для символов
+def build_codes(node, code, codes):
+    if node is None:
+        return
+
+    #если это лист
+    if node.char is not None:
+        codes[node.char] = code
+        return
+
+    #идем влево
+    build_codes(node.left, code + "0", codes)
+    #идем вправо
+    build_codes(node.right, code + "1", codes)
+
+
+#кодирование
+def huffman_encode(text):
+    #строим дерево
+    root = build_tree(text)
+    
+    codes = {}
+    build_codes(root, "", codes)
+
+    encoded = ""
+    for ch in text:
+        encoded += codes[ch]
+
+    return encoded, root
+
+
+#тест
+text = "hello"
+encoded, tree = huffman_encode(text)
+print("Encoded:", encoded)
